@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard | EduSphere</title>
+    <link rel="stylesheet" href="/E_Learning_System/css/styles.css" />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f0f2f5;
+      }
+
+      header {
+        background-color: #2575fc;
+        padding: 16px 40px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .nav-logo img {
+        height: 50px;
+        background-color: white;
+
+        border-radius: 6px;
+      }
+
+      nav a {
+        margin-left: 20px;
+        text-decoration: none;
+        color: white;
+        font-weight: 500;
+        padding: 6px 12px;
+        border-radius: 5px;
+        transition: background 0.3s;
+      }
+
+      nav a:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+      }
+
+      main {
+        max-width: 800px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      h1 {
+        color: #2575fc;
+        margin-bottom: 10px;
+      }
+
+      p {
+        font-size: 18px;
+        color: #444;
+        margin-bottom: 30px;
+      }
+
+      button {
+        padding: 12px 24px;
+        background-color: #ff4b5c;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #e84350;
+      }
+
+      #adminLinks {
+        margin-top: 40px;
+      }
+
+      #adminLinks a {
+        display: inline-block;
+        background-color: #00b894;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
+
+      #adminLinks a:hover {
+        background-color: #019172;
+      }
+
+      @media (max-width: 600px) {
+        main {
+          margin: 20px;
+          padding: 25px;
+        }
+
+        nav {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        nav a {
+          margin: 10px 0 0 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/" class="nav-logo">
+        <img
+          src="/E_Learning_System/assets/images/image.jpg"
+          alt="EduSphere Logo"
+        />
+      </a>
+      <div class="nav-links">
+        <a href="/E_Learning_System/pages/home.html">Home</a>
+        <a href="/E_Learning_System/pages/courses.html">Courses</a>
+        <a href="/E_Learning_System/pages/topratedcourse.html"
+          >Top Rated Courses</a
+        >
+        <a href="/E_Learning_System/pages/dashboard.html">Profile</a>
+      </div>
+    </nav>
+
+    <main>
+      <h1 id="welcomeMsg"></h1>
+      <p id="roleInfo"></p>
+      <button onclick="logout()">Logout</button>
+
+      <div id="adminLinks"></div>
+    </main>
+
+    <script>
+      const user = JSON.parse(localStorage.getItem("loggedInUser"));
+
+      if (!user) {
+        alert("Please login first!");
+        window.location.href = "login.html";
+      }
+
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const currentUser = users.find((u) => u.email === user.email);
+
+      document.getElementById(
+        "welcomeMsg"
+      ).textContent = `Welcome, ${currentUser.name}`;
+      document.getElementById(
+        "roleInfo"
+      ).textContent = `Your Role: ${currentUser.role}`;
+
+      if (currentUser.role === "admin") {
+        document.getElementById("adminLinks").innerHTML = `
+          <a href="createCourse.html">Go to Admin Course Page</a>
+        `;
+      }
+
+      function logout() {
+        localStorage.removeItem("loggedInUser");
+        window.location.href = "login.html";
+      }
+    </script>
+  </body>
+</html>

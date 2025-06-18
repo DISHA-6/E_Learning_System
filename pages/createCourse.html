@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create Course</title>
+    <link rel="stylesheet" href="/E_Learning_System/css/styles.css" />
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f0fa;
+      }
+
+      main {
+        padding: 40px;
+        max-width: 800px;
+        margin: auto;
+      }
+
+      h1 {
+        text-align: center;
+        color: #0d6efd;
+        margin-bottom: 30px;
+      }
+
+      form {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 40px;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+
+      button {
+        background-color: #0d6efd;
+        color: white;
+        padding: 12px 24px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #084ec1;
+      }
+
+      #courseList > div {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      #courseList img {
+        width: 200px;
+        height: auto;
+        border-radius: 6px;
+        flex-shrink: 0;
+      }
+
+      .course-details {
+        flex: 1;
+      }
+
+      .course-details h3 {
+        color: #1a4990;
+        margin-bottom: 10px;
+      }
+
+      .course-details p {
+        margin-bottom: 10px;
+      }
+
+      nav {
+        margin-bottom: 0;
+      }
+
+      .nav-links a.nav-btn {
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+      }
+
+      .nav-links a.nav-btn:hover {
+        color: #dee055;
+      }
+
+      @media (max-width: 600px) {
+        main {
+          padding: 20px;
+        }
+
+        #courseList > div {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        #courseList img {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <a href="/" class="nav-logo">
+        <img
+          src="/E_Learning_System/assets/images/image.jpg"
+          alt="EduSphere Logo"
+        />
+      </a>
+      <div class="nav-links">
+        <a href="/E_Learning_System/pages/home.html">Home</a>
+        <a href="/E_Learning_System/pages/courses.html">Courses</a>
+        <a href="/E_Learning_System/pages/topratedcourse.html" class="nav-btn"
+          >Top Rated Courses</a
+        >
+      </div>
+    </nav>
+
+    <main>
+      <h1>Create a Course</h1>
+      <form id="courseForm">
+        <input type="text" id="title" placeholder="Course Title" required />
+        <textarea
+          id="description"
+          placeholder="Course Description"
+          rows="4"
+          required
+        ></textarea>
+        <input type="text" id="image" placeholder="Image URL" required />
+        <input type="text" id="video" placeholder="Video URL" required />
+        <button type="submit">Create Course</button>
+      </form>
+
+      <div id="courseList"></div>
+    </main>
+
+    <script>
+      const user = JSON.parse(localStorage.getItem("loggedInUser"));
+      if (!user || user.role !== "admin") {
+        alert("Access denied!");
+        window.location.href = "dashboard.html";
+      }
+
+      const courseForm = document.getElementById("courseForm");
+      const courseList = document.getElementById("courseList");
+
+      function renderCourses() {
+        const courses = JSON.parse(localStorage.getItem("courses")) || [];
+        courseList.innerHTML = courses
+          .map(
+            (c, index) => `
+          <div>
+            <img src="${c.image}" alt="Course Image" />
+            <div class="course-details">
+              <h3>${c.title}</h3>
+              <p>${c.description}</p>
+              <a href="${c.video}" target="_blank">📺 Watch Video</a><br/><br/>
+              <button onclick="deleteCourse(${index})">Delete</button>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      function deleteCourse(index) {
+        const courses = JSON.parse(localStorage.getItem("courses")) || [];
+        courses.splice(index, 1);
+        localStorage.setItem("courses", JSON.stringify(courses));
+        renderCourses();
+      }
+
+      function convertToEmbedUrl(url) {
+        const match = url.match(
+          /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/
+        );
+        if (match && match[1]) {
+          return `https://www.youtube.com/embed/${match[1]}`;
+        } else {
+          alert("Please enter a valid YouTube video URL.");
+          return null;
+        }
+      }
+
+      courseForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const title = document.getElementById("title").value;
+        const description = document.getElementById("description").value;
+        const image = document.getElementById("image").value;
+        const videoInput = document.getElementById("video").value;
+        const embedUrl = convertToEmbedUrl(videoInput);
+
+        if (!embedUrl) return;
+
+        const newCourse = { title, description, image, video: embedUrl };
+        const courses = JSON.parse(localStorage.getItem("courses")) || [];
+        courses.push(newCourse);
+        localStorage.setItem("courses", JSON.stringify(courses));
+
+        courseForm.reset();
+        renderCourses();
+      });
+
+      renderCourses();
+    </script>
+  </body>
+</html>
