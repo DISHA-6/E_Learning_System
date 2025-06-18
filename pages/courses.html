@@ -9,16 +9,10 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-
-    <!-- Optional Custom Styles -->
-    <style>
-      .card-img-top {
-        width: 100%;
-        height: 250px; /* Fixed height */
-        object-fit: contain; /* Ensures image fills area, crops if needed */
-      }
-    </style>
-    <!-- <link rel="stylesheet" href="css/styles.css" /> -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -27,16 +21,15 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
       rel="stylesheet"
     />
-
     <link rel="stylesheet" href="/E_Learning_System/css/styles.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-    />
+
+    <style>
+      .card-img-top {
+        width: 100%;
+        height: 250px;
+        object-fit: contain;
+      }
+    </style>
   </head>
   <body>
     <!-- Header -->
@@ -44,7 +37,6 @@
       class="d-flex justify-content-between align-items-center px-4 py-2"
       style="background-color: #4d78b9"
     >
-      <!-- Logo -->
       <a href="/" class="nav-logo d-flex align-items-center">
         <img
           src="/E_Learning_System/assets/images/image.jpg"
@@ -53,7 +45,6 @@
         />
       </a>
 
-      <!-- Navigation Links -->
       <div class="nav-links d-flex align-items-center gap-4">
         <a href="/E_Learning_System/pages/home.html" class="text-white">Home</a>
         <a href="/E_Learning_System/pages/courses.html" class="text-white"
@@ -65,7 +56,6 @@
           >Top Rated Courses</a
         >
 
-        <!-- User Dropdown -->
         <div class="dropdown">
           <a
             href="#"
@@ -77,7 +67,6 @@
           >
             <i class="bi bi-person-circle fs-3"></i>
           </a>
-
           <ul
             class="dropdown-menu dropdown-menu-end text-center"
             aria-labelledby="userDropdown"
@@ -102,6 +91,21 @@
       </div>
     </nav>
 
+    <!-- Admin Controls -->
+    <div
+      class="container mt-4 text-end"
+      id="adminControls"
+      style="display: none"
+    >
+      <button
+        class="btn btn-success"
+        data-bs-toggle="modal"
+        data-bs-target="#addCourseModal"
+      >
+        + Add New Course
+      </button>
+    </div>
+
     <!-- Filter Section -->
     <section class="container my-4">
       <label for="categoryFilter" class="form-label">Filter by Category:</label>
@@ -115,14 +119,25 @@
       </select>
     </section>
 
+    <!-- Search Courses -->
+    <div class="container mb-4">
+      <label for="searchInput" class="form-label"
+        >Search Courses by Title:</label
+      >
+      <input
+        type="text"
+        id="searchInput"
+        class="form-control w-50"
+        placeholder="Type to search..."
+      />
+    </div>
+
     <!-- Course Cards -->
     <section class="container">
-      <div class="row" id="courseList">
-        <!-- Course cards will be rendered here by JavaScript -->
-      </div>
+      <div class="row" id="courseList"></div>
     </section>
 
-    <!-- Video Preview Modal -->
+    <!-- Video Modal -->
     <div
       class="modal fade"
       id="videoModal"
@@ -155,9 +170,118 @@
       </div>
     </div>
 
-    <!-- Bootstrap Bundle JS (with Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Add/Edit Course Modal -->
+    <div
+      class="modal fade"
+      id="addCourseModal"
+      tabindex="-1"
+      aria-labelledby="addCourseModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="courseForm">
+            <div class="modal-header">
+              <h5 class="modal-title text-primary" id="addCourseModalLabel">
+                Add / Edit Course
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
 
+            <div class="modal-body">
+              <input type="hidden" id="editIndex" />
+
+              <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" required>
+                  <option value="">Select</option>
+                  <option value="programming">Programming</option>
+                  <option value="design">Design</option>
+                  <option value="marketing">Marketing</option>
+                  <option value="business">Business</option>
+                  <option value="data-science">Data Science</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea
+                  class="form-control"
+                  id="description"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label for="video" class="form-label">Video URL</label>
+                <input type="url" class="form-control" id="video" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="thumbnail" class="form-label">Thumbnail URL</label>
+                <input
+                  type="url"
+                  class="form-control"
+                  id="thumbnail"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Save Course</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Review Modal -->
+    <div
+      class="modal fade"
+      id="reviewModal"
+      tabindex="-1"
+      aria-labelledby="reviewModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="reviewModalLabel">Course Reviews</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h6 id="reviewCourseTitle" class="text-primary"></h6>
+            <div id="reviewList" class="mb-3"></div>
+            <textarea
+              id="newReviewText"
+              class="form-control"
+              placeholder="Write a review..."
+            ></textarea>
+          </div>
+          <div class="modal-footer">
+            <button id="submitReviewBtn" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/main.js"></script>
   </body>
 </html>
