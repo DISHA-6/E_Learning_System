@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Course Slider</title>
+    <title>Top Rated Courses</title>
 
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -18,12 +18,6 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
       rel="stylesheet"
     />
-
-    <link rel="stylesheet" href="/E_Learning_System/css/styles.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
@@ -34,6 +28,7 @@
       body {
         background-color: #ffffff;
         color: rgb(9, 9, 9);
+        font-family: "Roboto", sans-serif;
       }
 
       .card {
@@ -63,6 +58,14 @@
       .enroll-btn {
         background-color: orange;
         border: none;
+        color: black;
+        font-weight: bold;
+      }
+
+      .fa-star,
+      .fa-star-half-alt,
+      .far.fa-star {
+        margin-right: 2px;
       }
 
       @media (max-width: 768px) {
@@ -90,7 +93,7 @@
       <!-- Navigation Links -->
       <div class="nav-links d-flex align-items-center gap-4">
         <a href="/E_Learning_System/pages/home.html" class="text-white">Home</a>
-        <a <a href="/E_Learning_System/pages/courses.html" class="text-white"
+        <a href="/E_Learning_System/pages/courses.html" class="text-white"
           >Courses</a
         >
         <a
@@ -135,121 +138,17 @@
         </div>
       </div>
     </nav>
+
     <div class="container py-5">
       <h2 class="text-center mb-4">Top Rated Courses</h2>
-      <div id="courseCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <div class="d-flex justify-content-center gap-4 flex-wrap">
-              <div class="card" style="width: 18rem">
-                <img
-                  src="/E_Learning_System/assets/images/course 1.jpg"
-                  class="card-img-top"
-                  alt="JS"
-                />
-                <div class="card-body text-center">
-                  <h5 class="card-title">Javascript</h5>
-                  <p class="card-text">
-                    Master the fundamentals of JavaScript, the core language of
-                    the web. From variables to advanced DOM manipulation, this
-                    course empowers you to bring web pages to life.
-                  </p>
-                  <button class="btn enroll-btn">Enroll</button>
-                </div>
-              </div>
-
-              <div class="card" style="width: 18rem">
-                <img
-                  src="/E_Learning_System/assets/images/course 4.png"
-                  class="card-img-top"
-                  alt="UX/UI"
-                />
-                <div class="card-body text-center">
-                  <h5 class="card-title">Start UP</h5>
-                  <p class="card-text">
-                    Understand the startup journey from ideation to scaling.
-                    Learn product-market fit, MVP development, fundraising, and
-                    building a sustainable business.
-                  </p>
-                  <button class="btn enroll-btn">Enroll</button>
-                </div>
-              </div>
-
-              <div class="card" style="width: 18rem">
-                <img
-                  src="/E_Learning_System/assets/images/course 8.jpg"
-                  class="card-img-top"
-                  alt="BA"
-                />
-                <div class="card-body text-center">
-                  <h5 class="card-title">Social Media Marketing</h5>
-                  <p class="card-text">
-                    Learn how to grow brands and engage audiences through
-                    platforms like Instagram, Facebook, and LinkedIn. This
-                    course covers content strategy, analytics, and ad campaigns
-                    to drive online success.
-                  </p>
-                  <button class="btn enroll-btn">Enroll</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="carousel-item">
-            <div class="d-flex justify-content-center gap-4 flex-wrap">
-              <div class="card" style="width: 18rem">
-                <img
-                  src="/E_Learning_System/assets/images/course 12.png"
-                  class="card-img-top"
-                  alt="Node"
-                />
-                <div class="card-body text-center">
-                  <h5 class="card-title">Figma</h5>
-                  <p class="card-text">
-                    Dive into UI/UX design with Figma, a collaborative interface
-                    design tool. Learn to create wireframes, prototypes, and
-                    design systems for seamless user experiences.
-                  </p>
-                  <button class="btn enroll-btn">Enroll</button>
-                </div>
-              </div>
-
-              <div class="card" style="width: 18rem">
-                <img
-                  src="/E_Learning_System/assets/images/course 14.jpg"
-                  class="card-img-top"
-                  alt="SEO"
-                />
-                <div class="card-body text-center">
-                  <h5 class="card-title">Entrepreneurship</h5>
-                  <p class="card-text">
-                    Explore the mindset, tools, and strategies needed to turn
-                    ideas into impactful ventures. This course equips you with
-                    business planning, funding, and leadership skills.
-                  </p>
-                  <button class="btn enroll-btn">Enroll</button>
-                </div>
-              </div>
-
-              <div class="card" style="width: 18rem">
-                <img
-                  src="/E_Learning_System/assets/images/course 6.png"
-                  class="card-img-top"
-                  alt="React"
-                />
-                <div class="card-body text-center">
-                  <h5 class="card-title">React</h5>
-                  <p class="card-text">
-                    Learn how to build fast, interactive user interfaces with
-                    React, a powerful JavaScript library. This course covers
-                    components, hooks, and state management to create dynamic
-                    web apps.
-                  </p>
-                  <button class="btn enroll-btn">Enroll</button>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div
+        id="courseCarousel"
+        class="carousel slide"
+        data-bs-ride="carousel"
+        data-bs-interval="5000"
+      >
+        <div class="carousel-inner" id="carouselContent">
+          <!-- Dynamic content inserted here -->
         </div>
 
         <button
@@ -271,6 +170,77 @@
       </div>
     </div>
 
-    <script src="../js/main.js"></script>
+    <script>
+      async function loadTopRatedCourses() {
+        try {
+          const response = await fetch("/E_Learning_System/data/courses.json");
+          const courses = await response.json();
+
+          const topRatedCourses = courses.filter(
+            (course) => course.reviews >= 4
+          );
+
+          const cardsPerSlide = 3;
+          const slides = [];
+
+          function getStarsHTML(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+            let stars = "";
+            for (let i = 0; i < fullStars; i++) {
+              stars += '<i class="fas fa-star text-warning"></i>';
+            }
+            if (halfStar) {
+              stars += '<i class="fas fa-star-half-alt text-warning"></i>';
+            }
+            for (let i = 0; i < emptyStars; i++) {
+              stars += '<i class="far fa-star text-warning"></i>';
+            }
+            return `<div class="mb-2">${stars}</div>`;
+          }
+
+          for (let i = 0; i < topRatedCourses.length; i += cardsPerSlide) {
+            const slideCourses = topRatedCourses.slice(i, i + cardsPerSlide);
+
+            const cardsHTML = slideCourses
+              .map((course) => {
+                return `
+                  <div class="card" style="width: 18rem;">
+                    <img src="${course.thumbnail}" class="card-img-top" alt="${
+                  course.title
+                }" />
+                    <div class="card-body text-center">
+                      <h5 class="card-title">${course.title}</h5>
+                      ${getStarsHTML(course.reviews)}
+                      <p class="text-light">${course.reviews} stars</p>
+                      <p class="card-text">${course.description}</p>
+                      <button class="btn enroll-btn">Enroll</button>
+                    </div>
+                  </div>
+                `;
+              })
+              .join("");
+
+            const slideHTML = `
+              <div class="carousel-item ${i === 0 ? "active" : ""}">
+                <div class="d-flex justify-content-center gap-4 flex-wrap">
+                  ${cardsHTML}
+                </div>
+              </div>
+            `;
+            slides.push(slideHTML);
+          }
+
+          document.getElementById("carouselContent").innerHTML =
+            slides.join("");
+        } catch (error) {
+          console.error("Error loading courses:", error);
+        }
+      }
+
+      loadTopRatedCourses();
+    </script>
   </body>
 </html>

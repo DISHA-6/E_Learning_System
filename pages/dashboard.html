@@ -164,9 +164,13 @@
       ).textContent = `Your Role: ${currentUser.role}`;
 
       if (currentUser.role === "admin") {
-        document.getElementById("adminLinks").innerHTML = `
+        /*document.getElementById("adminLinks").innerHTML = `
           <a href="createCourse.html">Go to Admin Course Page</a>
-        `;
+        `;---old code*/
+
+        //code modified -> redirecting to courses page
+        document.getElementById("adminLinks").innerHTML = `
+          <a href="courses.html">View Course Page</a>`;
       }
 
       function logout() {
