@@ -1,344 +1,402 @@
-var __awaiter =
-  (this && this.__awaiter) ||
-  function (thisArg, _arguments, P, generator) {
-    function adopt(value) {
-      return value instanceof P
-        ? value
-        : new P(function (resolve) {
-            resolve(value);
-          });
-    }
-    return new (P || (P = Promise))(function (resolve, reject) {
-      function fulfilled(value) {
-        try {
-          step(generator.next(value));
-        } catch (e) {
-          reject(e);
-        }
-      }
-      function rejected(value) {
-        try {
-          step(generator["throw"](value));
-        } catch (e) {
-          reject(e);
-        }
-      }
-      function step(result) {
-        result.done
-          ? resolve(result.value)
-          : adopt(result.value).then(fulfilled, rejected);
-      }
-      step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-  };
+function setupPage(pageName) {
+  console.log("🔥 setupPage triggered:", pageName);
+  if (pageName === 'login') setupLogin();
+  if (pageName === 'register') setupRegister();
+  if (pageName === 'home') setupHome();
+  if (pageName === 'courses') setupCourses();
+  if (pageName === 'topratedcourse') setupTopRated();
+}
 
-var __generator =
-  (this && this.__generator) ||
-  function (thisArg, body) {
-    var _ = {
-        label: 0,
-        sent: function () {
-          if (t[0] & 1) throw t[1];
-          return t[1];
-        },
-        trys: [],
-        ops: [],
-      },
-      f,
-      y,
-      t,
-      g = {};
-    return (
-      (g = {
-        next: verb(0),
-        throw: verb(1),
-        return: verb(2),
-      }),
-      typeof Symbol === "function" &&
-        (g[Symbol.iterator] = function () {
-          return this;
-        }),
-      g
+// LOGIN
+function setupLogin() {
+  const form = document.getElementById("loginForm");
+  if (!form) return;
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const email = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const error = document.getElementById("loginError");
+
+    const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    if (!emailPattern.test(email)) {
+      error.textContent = "Please enter a valid email address.";
+      return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    const validUser = users.find(
+      (user) => user.email === email && user.password === password
     );
-    function verb(n) {
-      return function (v) {
-        return step([n, v]);
-      };
+
+    if (validUser) {
+      alert("Login successful!");
+      localStorage.setItem("loggedInUser", JSON.stringify(validUser));
+      location.hash = "home";
+    } else {
+      error.textContent = "Invalid credentials. Please try again or register....";
     }
-    function step(op) {
-      if (f) throw new TypeError("Generator is already executing.");
-      while (_)
-        try {
-          if (
-            ((f = 1),
-            y &&
-              (t =
-                op[0] & 2
-                  ? y["return"]
-                  : op[0]
-                  ? y["throw"] || ((t = y["return"]) && t.call(y), 0)
-                  : y.next) &&
-              !(t = t.call(y, op[1])).done)
-          )
-            return t;
-          if (((y = 0), t)) op = [op[0] & 2, t.value];
-          switch (op[0]) {
-            case 0:
-            case 1:
-              t = op;
-              break;
-            case 4:
-              _.label++;
-              return { value: op[1], done: false };
-            case 5:
-              _.label++;
-              y = op[1];
-              op = [0];
-              continue;
-            case 7:
-              op = _.ops.pop();
-              _.trys.pop();
-              continue;
-            default:
-              if (
-                !((t = _.trys), (t = t.length > 0 && t[t.length - 1])) &&
-                (op[0] === 6 || op[0] === 2)
-              ) {
-                _ = 0;
-                continue;
-              }
-              if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) {
-                _.label = op[1];
-                break;
-              }
-              if (op[0] === 6 && _.label < t[1]) {
-                _.label = t[1];
-                t = op;
-                break;
-              }
-              if (t && _.label < t[2]) {
-                _.label = t[2];
-                _.ops.push(op);
-                break;
-              }
-              if (t[2]) _.ops.pop();
-              _.trys.pop();
-              continue;
-          }
-          op = body.call(thisArg, _);
-        } catch (e) {
-          op = [6, e];
-          y = 0;
-        } finally {
-          f = t = 0;
-        }
-      if (op[0] & 5) throw op[1];
-      return { value: op[0] ? op[1] : void 0, done: true };
+  });
+}
+
+// REGISTER
+function setupRegister() {
+  const form = document.getElementById("registerForm");
+  if (!form) return;
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const confirmPassword = document.getElementById("confirmPassword").value.trim();
+    const role = document.getElementById("role").value;
+    const error = document.getElementById("registerError");
+
+    const emailPattern = /^[^@\s]+@[^@\s]+\.com$/i;
+    if (!emailPattern.test(email)) {
+      error.textContent = "❌ Please enter a valid email";
+      return;
     }
-  };
 
-let courses = [];
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordPattern.test(password)) {
+      error.textContent = "❌ Password must be 8+ chars, with uppercase, lowercase, number & special character.";
+      return;
+    }
 
-function renderCourses(filter = "all", searchTerm = "") {
-  const courseList = document.getElementById("courseList");
-  if (!courseList) return;
+    if (password !== confirmPassword) {
+      error.textContent = "❌ Passwords do not match.";
+      return;
+    }
 
-  courseList.innerHTML = "";
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    if (users.some((user) => user.email === email)) {
+      error.textContent = "⚠️ User with this email already exists.";
+      return;
+    }
 
-  let filtered =
-    filter === "all" ? courses : courses.filter((c) => c.category === filter);
+    const newUser = { name, email, password, role };
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
 
-  if (searchTerm.trim() !== "") {
-    filtered = filtered.filter((c) =>
-      c.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    alert("✅ Registration successful!");
+    location.hash = "login";
+  });
+}
+
+// COURSES
+function setupCourses() {
+  const user = JSON.parse(localStorage.getItem("loggedInUser"));
+
+  // ✅ Load courses from localStorage
+  let courses = JSON.parse(localStorage.getItem("courses"));
+
+  // 📦 If not present in localStorage, load from JSON once and save to localStorage
+  if (!courses) {
+    fetch("/E_Learning_System/data/courses.json")
+      .then((res) => res.json())
+      .then((data) => {
+        localStorage.setItem("courses", JSON.stringify(data));
+        renderCourses(data, user?.role);
+      })
+      .catch((err) =>
+        console.error("❌ Failed to load courses.json:", err)
+      );
+  } else {
+    renderCourses(courses, user?.role);
   }
 
-  if (filtered.length === 0) {
-    courseList.innerHTML =
-      "<p class='text-muted'>No courses found matching the criteria.</p>";
+  // ✅ Show admin controls if admin
+  const adminControls = document.getElementById("adminControls");
+  if (adminControls) {
+    adminControls.style.display = user?.role === "admin" ? "block" : "none";
+  }
+}
+
+
+
+
+function renderCourseCard(course, index, role) {
+  const isAdmin = role === "admin";
+  const thumbnailPath = course.thumbnail.startsWith("../")
+    ? course.thumbnail.replace("..", "/E_Learning_System")
+    : course.thumbnail;
+
+  return `
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        <img src="${thumbnailPath}" class="card-img-top" alt="${course.title}" style="height: 200px; object-fit: cover;">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title text-primary">${course.title}</h5>
+          <h6 class="card-subtitle mb-2 text-muted text-capitalize">${course.category}</h6>
+          <p class="card-text">${course.description}</p>
+          
+          <div class="mt-auto d-flex flex-wrap gap-2">
+            <button class="btn btn-sm btn-info text-white preview-btn" data-bs-toggle="modal" data-bs-target="#videoModal" data-video="${course.video}">
+              <i class="bi bi-play-circle"></i> Preview
+            </button>
+            <button class="btn btn-sm btn-secondary review-btn" data-index="${index}" data-bs-toggle="modal" data-bs-target="#reviewModal">
+              <i class="bi bi-chat-dots"></i> Reviews
+            </button>
+
+            ${isAdmin ? `
+              <button class="btn btn-sm btn-warning edit-btn" data-index="${index}" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+                <i class="bi bi-pencil-square"></i> Edit
+              </button>
+              <button class="btn btn-sm btn-danger delete-btn" data-index="${index}">
+                <i class="bi bi-trash"></i> Delete
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCourses(courseArray) {
+  const user = JSON.parse(localStorage.getItem("loggedInUser"));
+  const role = user?.role || "user";
+  const container = document.getElementById("courseList");
+  container.innerHTML = "";
+
+  courseArray.forEach((course, index) => {
+    container.innerHTML += renderCourseCard(course, index, role);
+  });
+
+  // ✅ Important: attach event listeners to new buttons
+  addCourseEventListeners(courseArray);
+}
+
+
+function setupCourses() {
+  const user = JSON.parse(localStorage.getItem("loggedInUser"));
+  let courses = JSON.parse(localStorage.getItem("courses"));
+
+  if (!courses) {
+    fetch("/E_Learning_System/data/courses.json")
+      .then((res) => res.json())
+      .then((data) => {
+        localStorage.setItem("courses", JSON.stringify(data));
+        renderCourses(data, user?.role);
+        setupCourseActions(); // ✅ Add this line
+      })
+      .catch((err) =>
+        console.error("❌ Failed to load courses.json:", err)
+      );
+  } else {
+    renderCourses(courses, user?.role);
+    setupCourseActions(); // ✅ Add this line
+  }
+
+  const adminControls = document.getElementById("adminControls");
+  if (adminControls) {
+    adminControls.style.display = user?.role === "admin" ? "block" : "none";
+  }
+}
+function setupCourseActions() {
+
+}
+
+
+
+
+
+// SUPPORT FUNCTIONS
+function previewVideo(videoUrl) {
+  const frame = document.getElementById("videoFrame");
+  if (frame) {
+    frame.src = videoUrl;
+    new bootstrap.Modal(document.getElementById("videoModal")).show();
+  }
+}
+
+
+function openReviewModal(index) {
+  fetch("/E_Learning_System/data/courses.json")
+    .then(res => res.json())
+    .then(courses => {
+      const course = courses[index];
+      document.getElementById("reviewCourseTitle").textContent = course.title;
+      document.getElementById("reviewContent").textContent = `This course has a rating of ${course.reviews} stars.`;
+    });
+}
+
+
+function editCourse(index) {
+  fetch("/E_Learning_System/data/courses.json")
+    .then(res => res.json())
+    .then(courses => {
+      const course = courses[index];
+      if (!course) return alert("Course not found.");
+
+      // Fill modal fields
+      document.getElementById("courseIndex").value = index;
+      document.getElementById("courseTitle").value = course.title;
+      document.getElementById("courseCategory").value = course.category;
+      document.getElementById("courseDescription").value = course.description;
+      document.getElementById("courseVideo").value = course.video;
+      document.getElementById("courseThumbnail").value = course.thumbnail;
+      document.getElementById("courseReviews").value = course.reviews;
+    });
+}
+
+
+function deleteCourse(index) {
+  fetch("/E_Learning_System/data/courses.json")
+    .then(res => res.json())
+    .then(courses => {
+      if (confirm("❌ Are you sure you want to delete this course?")) {
+        courses.splice(index, 1);
+        renderCourses(courses);
+      }
+    });
+}
+
+
+// HOME + TOP RATED
+function setupHome() {
+  console.log("🏠 Home page loaded.");
+}
+
+function setupTopRated() {
+  const carouselContainer = document.getElementById("carouselContent");
+  if (!carouselContainer) return;
+
+  fetch("/E_Learning_System/data/courses.json")
+    .then(res => res.json())
+    .then(courses => {
+      const topRated = courses.filter(course => course.reviews >= 4);
+      const cardsPerSlide = 3;
+      const slides = [];
+
+      function getStarsHTML(rating) {
+        const fullStars = Math.floor(rating);
+        const halfStar = rating % 1 >= 0.5;
+        const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+        let stars = "";
+        for (let i = 0; i < fullStars; i++) stars += '<i class="fas fa-star text-warning"></i>';
+        if (halfStar) stars += '<i class="fas fa-star-half-alt text-warning"></i>';
+        for (let i = 0; i < emptyStars; i++) stars += '<i class="far fa-star text-warning"></i>';
+        return `<div class="mb-2">${stars}</div>`;
+      }
+
+      for (let i = 0; i < topRated.length; i += cardsPerSlide) {
+        const batch = topRated.slice(i, i + cardsPerSlide);
+        const cards = batch.map(course => `
+          <div class="card" style="width: 18rem;">
+            <img src="${course.thumbnail.replace("..", "/E_Learning_System")}" class="card-img-top" alt="${course.title}" />
+            <div class="card-body text-center">
+              <h5 class="card-title">${course.title}</h5>
+              ${getStarsHTML(course.reviews)}
+              <p class="text-light">${course.reviews} stars</p>
+              <p class="card-text">${course.description}</p>
+              <button class="btn enroll-btn">Enroll</button>
+            </div>
+          </div>
+        `).join("");
+
+        slides.push(`
+          <div class="carousel-item ${i === 0 ? 'active' : ''}">
+            <div class="d-flex justify-content-center gap-4 flex-wrap">
+              ${cards}
+            </div>
+          </div>
+        `);
+      }
+
+      carouselContainer.innerHTML = slides.join("");
+    })
+    .catch(err => {
+      console.error("❌ Failed to load top-rated courses:", err);
+      carouselContainer.innerHTML = "<p class='text-danger text-center'>Failed to load courses.</p>";
+    });
+}
+
+
+
+function renderTopRatedCourses(courses) {
+  const container = document.getElementById("topRatedCarousel");
+  if (!container) return;
+
+  if (courses.length === 0) {
+    container.innerHTML = "<p class='text-center'>No top rated courses found.</p>";
     return;
   }
 
-  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-  const isAdmin = loggedInUser?.role === "admin";
+  let carouselInner = "";
+  courses.forEach((course, index) => {
+    const isActive = index === 0 ? "active" : "";
+    const thumbnailPath = course.thumbnail.startsWith("../")
+      ? course.thumbnail.replace("..", "/E_Learning_System")
+      : course.thumbnail;
 
-  filtered.forEach((course, index) => {
-    const col = document.createElement("div");
-    col.className = "col-md-4 mb-4";
-    col.innerHTML = `
-      <div class="card h-100 shadow-sm">
-        <img src="${course.thumbnail}" class="card-img-top" alt="${
-      course.title
-    }">
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title text-primary">${course.title}</h5>
-          <h6 class="card-subtitle mb-2 text-muted text-capitalize">${
-            course.category
-          }</h6>
-          <p class="card-text">${course.description}</p>
-          <button class="btn btn-outline-primary mt-auto preview-btn" data-bs-toggle="modal" data-bs-target="#videoModal" data-video="${
-            course.video
-          }">Preview</button>
-          ${
-            isAdmin
-              ? `<div class="d-flex justify-content-between mt-2">
-                  <button class="btn btn-sm btn-warning edit-btn" data-index="${index}" data-bs-toggle="modal" data-bs-target="#addCourseModal">Edit</button>
-                  <button class="btn btn-sm btn-danger delete-btn" data-index="${index}">Delete</button>
-                </div>`
-              : ""
-          }
+    carouselInner += `
+      <div class="carousel-item ${isActive}">
+        <div class="text-center">
+          <img src="${thumbnailPath}" class="d-block mx-auto" style="max-height: 300px;">
+          <div class="mt-3">
+            <h4>${course.title}</h4>
+            <p>${course.description}</p>
+            <p class="text-warning"><i class="bi bi-star-fill"></i> ${course.reviews}</p>
+          </div>
         </div>
       </div>
     `;
-    courseList.appendChild(col);
   });
 
-  attachPreviewEventListeners();
-  attachAdminActionListeners();
+  container.innerHTML = `
+    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">${carouselInner}</div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+  `;
 }
 
-function attachPreviewEventListeners() {
-  const buttons = document.querySelectorAll(".preview-btn");
-  const videoFrame = document.getElementById("videoFrame");
-  if (!videoFrame) return;
-
-  buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const videoUrl = button.getAttribute("data-video");
-      if (videoUrl) {
-        videoFrame.src = videoUrl;
-      }
+function addCourseEventListeners(courses) {
+  document.querySelectorAll(".preview-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const video = btn.getAttribute("data-video");
+      previewVideo(video);
     });
   });
 
-  const videoModal = document.getElementById("videoModal");
-  if (videoModal) {
-    videoModal.addEventListener("hidden.bs.modal", () => {
-      videoFrame.src = "";
+  document.querySelectorAll(".review-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const index = btn.getAttribute("data-index");
+      openReviewModal(index);
     });
-  }
-}
+  });
 
-function attachAdminActionListeners() {
   document.querySelectorAll(".edit-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const index = parseInt(btn.dataset.index);
-      const course = courses[index];
-      document.getElementById("title").value = course.title;
-      document.getElementById("category").value = course.category;
-      document.getElementById("description").value = course.description;
-      document.getElementById("video").value = course.video;
-      document.getElementById("thumbnail").value = course.thumbnail;
-      document.getElementById("courseForm").dataset.editIndex = index;
+    btn.addEventListener("click", (e) => {
+      const index = btn.getAttribute("data-index");
+      editCourse(index);
     });
   });
 
   document.querySelectorAll(".delete-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const index = parseInt(btn.dataset.index);
-      if (confirm("Are you sure you want to delete this course?")) {
-        courses.splice(index, 1);
-        localStorage.setItem("courses", JSON.stringify(courses));
-        renderCourses();
-      }
+    btn.addEventListener("click", (e) => {
+      const index = btn.getAttribute("data-index");
+      deleteCourse(index);
     });
   });
 }
 
-document.getElementById("courseForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-  const title = document.getElementById("title").value.trim();
-  const category = document.getElementById("category").value;
-  const description = document.getElementById("description").value.trim();
-  const video = document.getElementById("video").value.trim();
-  const thumbnail = document.getElementById("thumbnail").value.trim();
 
-  const newCourse = { title, category, description, video, thumbnail };
-  const indexToEdit = this.dataset.editIndex;
-
-  if (indexToEdit !== undefined) {
-    courses[parseInt(indexToEdit)] = newCourse;
-    delete this.dataset.editIndex;
-  } else {
-    courses.push(newCourse);
-  }
-
-  localStorage.setItem("courses", JSON.stringify(courses));
-  this.reset();
-  const modal = bootstrap.Modal.getInstance(
-    document.getElementById("addCourseModal")
-  );
-  modal.hide();
-  renderCourses();
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const filterSelect = document.getElementById("categoryFilter");
-  const searchInput = document.getElementById("searchInput");
-  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-  const isAdmin = loggedInUser?.role === "admin";
-
-  let currentFilter = "all";
-  let currentSearchTerm = "";
-
-  if (loggedInUser) {
-    document.getElementById("userName").textContent = loggedInUser.name;
-    document.getElementById("userRole").textContent = loggedInUser.role;
-  }
-
-  if (isAdmin) {
-    document.getElementById("adminControls").style.display = "block";
-  }
-
-  // Handle URL filter from ?category=something
-  const urlParams = new URLSearchParams(window.location.search);
-  const categoryFromUrl = urlParams.get("category");
-  if (categoryFromUrl) {
-    currentFilter = categoryFromUrl;
-    const filterDropdown = document.getElementById("categoryFilter");
-    if (filterDropdown) filterDropdown.value = categoryFromUrl;
-  }
-
-  fetch("/E_Learning_System/data/courses.json")
-    .then((res) => {
-      if (!res.ok) throw new Error("Failed to load courses.json");
-      return res.json();
-    })
-    .then((fetchedCourses) => {
-      const storedCourses = JSON.parse(localStorage.getItem("courses")) || [];
-      const titles = new Set(storedCourses.map((c) => c.title));
-      const merged = [
-        ...storedCourses,
-        ...fetchedCourses.filter((c) => !titles.has(c.title)),
-      ];
-      courses = merged;
-      localStorage.setItem("courses", JSON.stringify(merged));
-      renderCourses(currentFilter, currentSearchTerm);
-    })
-    .catch((err) => {
-      console.error("Error loading courses.json:", err);
-      courses = JSON.parse(localStorage.getItem("courses")) || [];
-      renderCourses(currentFilter, currentSearchTerm);
-    });
-
-  filterSelect.addEventListener("change", (e) => {
-    currentFilter = e.target.value;
-    renderCourses(currentFilter, currentSearchTerm);
-  });
-
-  searchInput.addEventListener("input", (e) => {
-    currentSearchTerm = e.target.value;
-    renderCourses(currentFilter, currentSearchTerm);
-  });
-
-  document.getElementById("logoutBtn").addEventListener("click", () => {
-    localStorage.removeItem("loggedInUser");
-    window.location.href = "/E_Learning_System/pages/login.html";
-  });
-});
 
 function logout() {
   localStorage.removeItem("loggedInUser");
-  window.location.href = "login.html";
+  location.hash = "login"; // go to login page without reload
 }
+
+
+
+

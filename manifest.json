@@ -1,18 +1,19 @@
 {
-  "name": "Edusphere",
-  "short_name": "Edusphere",
-  "start_url": "/pages/index.html",
+  "name": "EduSphere – E-Learning Platform",
+  "short_name": "EduSphere",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#3fbab2",
+  "theme_color": "#4d78b9",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "assets/images/icon-192.png",
+      "src": "assets/images/icons8-book-50.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "assets/images/icon-512.png",
+      "src": "assets/images/icons8-mail-50.png",
       "sizes": "512x512",
       "type": "image/png"
     }
