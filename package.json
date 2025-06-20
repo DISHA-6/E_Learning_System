@@ -1,0 +1,7 @@
+{
+  "name": "e_learning_system",
+  "version": "1.0.0",
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

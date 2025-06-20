@@ -1,0 +1,151 @@
+<!-- Font for title -->
+<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet" />
+
+<div class="register-container">
+  <h1>Register</h1>
+  <form id="registerForm" novalidate>
+    <input type="text" id="name" placeholder="Full Name" required />
+    <input
+      type="email"
+      id="email"
+      placeholder="Email Address"
+      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"
+      title="Enter a valid email address"
+      required
+    />
+    
+    <input
+      type="password"
+      id="password"
+      placeholder="Password"
+      pattern="^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*?&]{8,}$"
+      title="Enter password"
+      required
+    />
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+    <select id="role" required>
+      <option value="">Select Role</option>
+      <option value="admin">Admin</option>
+      <option value="user">User</option>
+    </select>
+    <button type="submit">Register</button>
+    <p class="signup-link">
+      Already have an account? <a href="#/login">Login</a>
+    </p>
+  </form>
+</div>
+
+<style>
+  body {
+    background: url("/E_Learning_System/assets/images/login1.jpg") no-repeat center center fixed;
+    background-size: cover;
+  }
+
+  .register-container {
+    background-color: rgba(22, 28, 93, 0.75);
+    padding: 60px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 550px;
+    margin: 60px auto;
+    text-align: center;
+    color: #fff;
+  }
+
+  .register-container h1 {
+    font-family: 'Lobster', cursive;
+    color: #f9f9f9;
+    margin-bottom: 30px;
+    font-size: 36px;
+  }
+
+  .register-container input,
+  .register-container select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+
+  .register-container button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background-color: #ffd700;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #161c5d;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .register-container button:hover {
+    background-color: #e6c200;
+  }
+
+  .signup-link {
+    margin-top: 20px;
+    font-size: 15px;
+  }
+
+  .signup-link a {
+    color: #ffd700;
+    text-decoration: none;
+  }
+
+  .signup-link a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<script>
+  document.getElementById("registerForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const role = document.getElementById("role").value;
+    const password = document.getElementById("password").value;
+    const confirm = document.getElementById("confirmPassword").value;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!name || !email || !role || !password || !confirm) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      alert("Invalid email format.");
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      alert("Password must have at least 6 characters with letters and numbers.");
+      return;
+    }
+
+    if (password !== confirm) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    if (users.some((u) => u.email === email)) {
+      alert("This email is already registered.");
+      return;
+    }
+
+    users.push({ name, email, password, role });
+    localStorage.setItem("users", JSON.stringify(users));
+    alert("Registration successful! Redirecting to login...");
+    window.location.hash = "#/login";
+  });
+</script>

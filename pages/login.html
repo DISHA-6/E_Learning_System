@@ -1,0 +1,119 @@
+
+<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet" />
+
+<!-- Login Page Content for SPA -->
+<div class="login-container">
+  <h1>Login</h1>
+  <form id="loginForm">
+    <input type="email" id="loginEmail" placeholder="Email" required />
+    <input type="password" id="loginPassword" placeholder="Password" required />
+    <button type="submit">Login</button>
+    <span class="signup-link">Don't have an account? <a href="#/register">Register</a></span>
+  </form>
+</div>
+
+<!-- Scoped CSS (keep inside this page for styling) -->
+<style>
+  body {
+    background: url("/E_Learning_System/assets/images/login1.jpg") no-repeat center center fixed;
+    background-size: cover;
+  }
+
+  .login-container {
+    background-color: rgba(22, 28, 93, 0.75);
+    padding: 60px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 550px;
+    margin: 60px auto;
+    text-align: center;
+    color: #fff;
+  }
+
+  .login-container h1 {
+    font-family: 'Lobster', cursive;
+    color: #f9f9f9;
+    margin-bottom: 40px;
+    font-size: 36px;
+  }
+
+  .login-container input {
+    width: 100%;
+    padding: 15px;
+    margin: 12px 0;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+
+  .login-container button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 25px;
+    background-color: #ffd700;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #161c5d;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .login-container button:hover {
+    background-color: #e6c200;
+  }
+
+  .signup-link {
+    margin-top: 20px;
+    display: block;
+    font-size: 15px;
+  }
+
+  .signup-link a {
+    color: #ffd700;
+    text-decoration: none;
+  }
+
+  .signup-link a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<!-- Login Script (SPA-friendly) -->
+<script>
+  document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!emailRegex.test(email)) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+
+    // Password minimum length
+    if (password.length < 6) {
+      alert('Password must be at least 8 characters long.');
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+
+    const user = users.find(u => u.email === email && u.password === password);
+
+    if (user) {
+      localStorage.setItem('loggedInUser', JSON.stringify(user));
+      alert('Login successful!');
+      window.location.hash = '#/home'; // Change this if admin/user route logic exists
+    } else {
+      alert('Invalid email or password.');
+    }
+  });
+</script>
