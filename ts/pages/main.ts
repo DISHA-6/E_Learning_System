@@ -160,14 +160,12 @@ document.addEventListener("DOMContentLoaded", () => {
         courseForm.reset();
       
         const modalEl = document.getElementById("addCourseModal") as HTMLElement;
-        const modal = bootstrap.Modal.getInstance(modalEl);
+      const modal = (window as any).bootstrap.Modal.getInstance(modalEl);
         modal?.hide();
       });
     }
 }
-
-
-});
+);
 
 
 

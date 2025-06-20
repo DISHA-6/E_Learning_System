@@ -21,7 +21,7 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/E_Learning_System/css/styles.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
 
     <style>
       .card-img-top {
@@ -39,19 +39,19 @@
     >
       <a href="/" class="nav-logo d-flex align-items-center">
         <img
-          src="/E_Learning_System/assets/images/image.jpg"
+          src="/assets/images/image.jpg"
           alt="EduSphere Logo"
           style="height: 50px"
         />
       </a>
 
       <div class="nav-links d-flex align-items-center gap-4">
-        <a href="/E_Learning_System/pages/home.html" class="text-white">Home</a>
-        <a href="/E_Learning_System/pages/courses.html" class="text-white"
+        <a href="#home" class="text-white">Home</a>
+        <a href="#courses" class="text-white"
           >Courses</a
         >
         <a
-          href="/E_Learning_System/pages/topratedcourse.html"
+          href="#topratedcourses"
           class="text-white"
           >Top Rated Courses</a
         >
@@ -283,5 +283,112 @@
     <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/main.js"></script>
+    <!-- Add this right before closing </body> -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const user = JSON.parse(localStorage.getItem("loggedInUser"));
+
+    if (user) {
+      document.getElementById("userName").textContent = user.name;
+      document.getElementById("userRole").textContent = user.role;
+      if (user.role === "admin") {
+        document.getElementById("adminControls").style.display = "block";
+      }
+    }
+
+    // Logout functionality
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("loggedInUser");
+        location.hash = "login";
+      });
+    }
+
+    // Button event delegation
+    document.getElementById("courseList").addEventListener("click", (e) => {
+      const index = e.target.closest("button")?.dataset.index;
+
+      // Preview
+      if (e.target.closest(".preview-btn")) {
+        const videoUrl = e.target.closest("button").dataset.video;
+        document.getElementById("videoFrame").src = videoUrl;
+      }
+
+      // Edit
+      if (e.target.closest(".edit-btn")) {
+        const courses = JSON.parse(localStorage.getItem("courses")) || [];
+        const course = courses[index];
+        if (course) {
+          document.getElementById("editIndex").value = index;
+          document.getElementById("title").value = course.title;
+          document.getElementById("category").value = course.category;
+          document.getElementById("description").value = course.description;
+          document.getElementById("video").value = course.video;
+          document.getElementById("thumbnail").value = course.thumbnail;
+        }
+      }
+
+      // Delete
+      if (e.target.closest(".delete-btn")) {
+        if (confirm("Are you sure you want to delete this course?")) {
+          let courses = JSON.parse(localStorage.getItem("courses")) || [];
+          courses.splice(index, 1);
+          localStorage.setItem("courses", JSON.stringify(courses));
+          location.reload(); // re-render
+        }
+      }
+
+      // Reviews
+      if (e.target.closest(".review-btn")) {
+        const courses = JSON.parse(localStorage.getItem("courses")) || [];
+        const course = courses[index];
+        document.getElementById("reviewCourseTitle").textContent = course.title;
+        document.getElementById("reviewList").innerHTML = course.reviewsText?.join("<hr>") || "No reviews yet.";
+
+        // Save review
+        document.getElementById("submitReviewBtn").onclick = () => {
+          const text = document.getElementById("newReviewText").value.trim();
+          if (text) {
+            course.reviewsText = course.reviewsText || [];
+            course.reviewsText.push(text);
+            localStorage.setItem("courses", JSON.stringify(courses));
+            location.reload();
+          }
+        };
+      }
+    });
+
+    // Save (add/edit) course
+    document.getElementById("courseForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById("title").value;
+      const category = document.getElementById("category").value;
+      const description = document.getElementById("description").value;
+      const video = document.getElementById("video").value;
+      const thumbnail = document.getElementById("thumbnail").value;
+      const index = document.getElementById("editIndex").value;
+
+      let courses = JSON.parse(localStorage.getItem("courses")) || [];
+
+      const newCourse = { title, category, description, video, thumbnail, reviews: 5 };
+
+      if (index !== "") {
+        courses[+index] = newCourse;
+      } else {
+        courses.push(newCourse);
+      }
+
+      localStorage.setItem("courses", JSON.stringify(courses));
+      location.reload();
+    });
+
+    // Initial rendering
+    setupCourses(); // Load from your main.js
+  });
+</script>
+
+
   </body>
 </html>
